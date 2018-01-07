@@ -3,9 +3,9 @@
 This script is to pull ticket data using Tookan API for Seattle Market
 
 ### Prerequisites:
-- Requires that jq is installed
+- Requires that jq is installed (https://stedolan.github.io/jq/download/)
 - A token.txt file exists in the same directory. (https://app.tookanapp.com/#/app/settings/apikey) 
-  Menu -> Settings -> API Key -> "V2 API Keys"
+  Find the token at: Menu -> Settings -> API Key -> "V2 API Keys"
 - A user.txt file exists in the same directory (https://app.tookanapp.com/#/app/settings/teams)
 
 ### Setup
