@@ -78,20 +78,36 @@ get_task_details(){
 
 # process_tasks
 # Parse each of the order-<id>.txt files for the relevant data
-# and produce a .csv file with all relavant info
+# and produce a .csv file called SeattleIssues
 process_tasks() {
-  echo "Fleet Name,Team Name,Customer Name,Job PickupName,Job Description,Job Pickup Data/Time,Started Time,Completed Time" > out.txt
 
-  #Todo - take out the first and last quotes
+  filename=SeattleIssues"$start_date"to"$end_date".csv
+
+
+  echo "Model of Bicycle,Who Initiated,Task#, Job Status, Fleet Name, Bicycle Plate Number, Time request made,	Time bike removed from service app,Time bike physically repaired or removed from street,	Issue Code,Issue Code Detail,Disposition" > $filename
+
+  hard_coded="LB8,Customer"
+
   for file in `ls order-*` ; do
-    #Make this smarter here to output the csv as wanted
-   cat $file | jq '.data[] | [.fleet_name,.team_name,.customer_username,.job_pickup_name,.job_description,.job_pickup_datetime,.started_datetime_local,.completed_datetime_local] | join(", ")' >> "SeattleIssues$start_date_$end_date".csv
+    #Grab the easy items from the JSON
+    line=$(cat $file | jq '.data[] | [(.job_id|tostring), (.job_status|tostring),.fleet_name,.customer_username,.job_pickup_datetime,.job_pickup_datetime,.completed_datetime_local] | join(",")' | sed 's/^.\(.*\).$/\1/') 
+    
+   #Issues Processing
+   issues_list=""
+   total_issue=""
+   issues_list=$(cat $file | jq -r '.data[] | .fields | .custom_field[] | select (.input ==true) | .label')
+  
+   for issue in `echo $issues_list` ; do
+     total_issue=$(echo $issue,$total_issue)
+   done;
+   
+   echo $hard_coded,$line,"$total_issue" >> $filename
 
   done;
 }
 
-#get_all_tasks
-#get_task_details
-#process_tasks
+get_all_tasks
+get_task_details
+process_tasks
 
 
