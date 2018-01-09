@@ -6,8 +6,8 @@
 
 # Adjust start_date and end_date as needed here
 # Format example: "2018-01-02"
-start_date="2018-01-06"
-end_date="2018-01-06"
+start_date="2018-01-01"
+end_date="2018-01-07"
 
 # token.txt must exist that contains the api_key
 # user.txt must exist that contains the userid
@@ -48,7 +48,7 @@ EOF
     -d "$payload" \
     https://api.tookanapp.com/v2/get_all_tasks)
 
-    echo $data |  jq '.data[] | select (.fleet_name=="Seattle Proper") | .job_id' >> job_ids.txt
+    echo $data |  jq '.data[] | select (.fleet_name as $f | ["Seattle North", "Seattle South"] | index($f) ) | .job_id' >> job_ids.txt
 
     total_page=$(echo $data | jq '.total_page_count')
     requested_page=$[$requested_page+1]
