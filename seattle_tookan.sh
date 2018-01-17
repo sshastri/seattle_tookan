@@ -4,10 +4,56 @@
 # ./seattle_tookan.sh
 #
 
-# Adjust start_date and end_date as needed here
+echo 'Hi Jason. Heres a cool script so you dont have to stare at Tookan all night :) CTRL-C will exit this script'
+
+echo "Enter the start date in the format YYYY-MM-DD and press ENTER:"
+read start_date
+while [[ ! $start_date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]];
+do
+  echo "Invalid Start Date. Use format YYYY-MM-DD. Ex: 2018-01-01"
+  read start_date
+done
+
+echo "Enter the end date in the format YYYY-MM-DD and press ENTER:"
+read end_date
+while [[ ! $end_date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]];
+do
+  echo "Invalid End Date. Use format YYYY-MM-DD. Ex: 2018-01-01"
+  read end_date
+done
+
+echo "Which market? Select a number and press ENTER:"
+echo "   [1] Seattle North, Seattle South"
+echo "   [2] DC Inner 1, DC Outer1"
+echo "   [3] SS Inner, SS Outer"
+read market
+while [[ ! $market =~ ^[1-3] ]];
+do
+  echo "Invalid market. Choose value 1-3. Try again"
+  read market
+done
+
+case "$market" in
+  1) declare -a market=("Seattle North" "Seattle South")
+     title="Seattle"
+  ;;
+  2) declare -a market=("DC Inner 1" "DC Outer1")
+     title="DC"
+  ;;
+  3) declare -a market=("SS Inner" "SS Outer")
+    title="SilverSprings"
+  ;;
+esac
+
+
+# Forced Values
 # Format example: "2018-01-02"
-start_date="2018-01-01"
-end_date="2018-01-07"
+#start_date="2018-01-07"
+#end_date="2018-01-08"
+#declare -a market=("Seattle North" "Seattle South")
+
+echo "Pulling report for ${market[@]} from $start_date to $end_date"
+
 
 # token.txt must exist that contains the api_key
 # user.txt must exist that contains the userid
@@ -48,13 +94,19 @@ EOF
     -d "$payload" \
     https://api.tookanapp.com/v2/get_all_tasks)
 
-    echo $data |  jq '.data[] | select (.fleet_name as $f | ["Seattle North", "Seattle South"] | index($f) ) | .job_id' >> job_ids.txt
+  #Loop through each market value
+  for val in "${market[@]}"
+  do
+   echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id' >> job_ids.txt
+  done
 
     total_page=$(echo $data | jq '.total_page_count')
     requested_page=$[$requested_page+1]
 
   done
 }
+
+
 
 # get_task_datails
 # Take ids in job_ids.txt file and make a separate call to get details
@@ -81,7 +133,7 @@ get_task_details(){
 # and produce a .csv file called SeattleIssues
 process_tasks() {
 
-  filename=SeattleIssues"$start_date"to"$end_date".csv
+  filename="${title}Issues${start_date}to${end_date}.csv"
 
   #Header
   echo "Task#,Model of Bicycle,Who Initiated,Job Status,Fleet Name, Bicycle Plate Number,Time request made,Time bike removed from service app,Time bike physically repaired or removed from street,Issue Code,Issue Code Detail,Disposition,Job Description" > $filename
