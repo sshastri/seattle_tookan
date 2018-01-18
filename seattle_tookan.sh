@@ -34,7 +34,7 @@ do
 done
 
 case "$market" in
-  1) declare -a market=("Seattle North" "Seattle South")
+  1) declare -a market=("Seattle North" "Seattle South ")
      title="Seattle"
   ;;
   2) declare -a market=("DC Inner 1" "DC Outer1")
@@ -50,7 +50,7 @@ esac
 # Format example: "2018-01-02"
 #start_date="2018-01-07"
 #end_date="2018-01-08"
-#declare -a market=("Seattle North" "Seattle South")
+#declare -a market=("Seattle North" "Seattle South ")
 
 echo "Pulling report for ${market[@]} from $start_date to $end_date"
 
@@ -97,7 +97,9 @@ EOF
   #Loop through each market value
   for val in "${market[@]}"
   do
-   echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id' >> job_ids.txt
+    #echo $val
+    #echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id'
+    echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id' >> job_ids.txt
   done
 
     total_page=$(echo $data | jq '.total_page_count')
