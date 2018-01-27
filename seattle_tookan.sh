@@ -24,7 +24,7 @@ done
 
 echo "Which market? Select a number and press ENTER:"
 echo "   [1] Seattle North, Seattle South"
-echo "   [2] DC Inner 1, DC Outer1"
+echo "   [2] DC Inner 1, DC Outer1, DC Inner2"
 echo "   [3] SS Inner, SS Outer"
 read market
 while [[ ! $market =~ ^[1-3] ]];
@@ -37,7 +37,7 @@ case "$market" in
   1) declare -a market=("Seattle North" "Seattle South ")
      title="Seattle"
   ;;
-  2) declare -a market=("DC Inner 1" "DC Outer1")
+  2) declare -a market=("DC Inner 1" "DC Outer 1" "DC Inner2")
      title="DC"
   ;;
   3) declare -a market=("SS Inner" "SS Outer")
@@ -196,5 +196,3 @@ process_tasks() {
 get_all_tasks
 get_task_details
 process_tasks
-
-
