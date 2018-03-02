@@ -24,7 +24,7 @@ done
 
 echo "Which market? Select a number and press ENTER:"
 echo "   [1] Seattle North, Seattle South"
-echo "   [2] DC Inner 1, DC Outer1, DC Inner2"
+echo "   [2] DC Inner 1, DC Outer1, DC Inner2, DC East Side, Louis Mozzano, Jason Starr"
 echo "   [3] SS Inner, SS Outer"
 read market
 while [[ ! $market =~ ^[1-3] ]];
@@ -37,7 +37,7 @@ case "$market" in
   1) declare -a market=("Seattle North" "Seattle South ")
      title="Seattle"
   ;;
-  2) declare -a market=("DC Inner 1" "DC Outer 1" "DC Inner2")
+  2) declare -a market=("DC Inner 1" "DC Outer 1" "DC Inner2" "DC EAST SIDE " "Louis Mozzano" "Jason Starr")
      title="DC"
   ;;
   3) declare -a market=("SS Inner" "SS Outer")
@@ -94,6 +94,7 @@ EOF
     -d "$payload" \
     https://api.tookanapp.com/v2/get_all_tasks)
 
+  echo $data | jq . > page$requested_page
   #Loop through each market value
   for val in "${market[@]}"
   do
