@@ -53,7 +53,7 @@ esac
 #declare -a market=("Seattle North" "Seattle South ")
 
 echo "Pulling report for ${market[@]} from $start_date to $end_date"
-
+filename="${title}Issues${start_date}to${end_date}"
 
 # token.txt must exist that contains the api_key
 # user.txt must exist that contains the userid
@@ -136,8 +136,6 @@ get_task_details(){
 # and produce a .csv file called SeattleIssues
 process_tasks() {
 
-  filename="${title}Issues${start_date}to${end_date}.csv"
-
   #Header
   echo "Task#,Model of Bicycle,Who Initiated,Job Status,Fleet Name, Bicycle Plate Number,Time request made,Time bike removed from service app,Time bike physically repaired or removed from street,Issue Code,Issue Code Detail,Disposition,Job Description" > $filename
 
@@ -194,6 +192,14 @@ process_tasks() {
   done;
 }
 
+function assign_codes {
+  ruby issue_codes.rb $filename > "${filename}".csv
+  rm $filename
+}
+
+
+
 get_all_tasks
 get_task_details
 process_tasks
+assign_codes
