@@ -34,13 +34,13 @@ do
 done
 
 case "$market" in
-  1) declare -a market=("Seattle North" "Seattle South ")
+  1) declare -a market=(84194 88414 118177 121837 84191)
      title="Seattle"
   ;;
-  2) declare -a market=("DC Inner 1" "DC Outer 1" "DC Inner2" "DC EAST SIDE " "Louis Mozzano" "Jason Starr")
+  2) declare -a market=(87189 91558 87191 92804)
      title="DC"
   ;;
-  3) declare -a market=("SS Inner" "SS Outer")
+  3) declare -a market=(87193 87194)
     title="SilverSprings"
   ;;
 esac
@@ -100,7 +100,7 @@ EOF
   do
     #echo $val
     #echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id'
-    echo $data |  jq --arg m "$val" '.data[] | select (.fleet_name == $m)| .job_id' >> job_ids.txt
+    echo $data |  jq ".data[] | select (.fleet_id == $val)| .job_id" >> job_ids.txt
   done
 
     total_page=$(echo $data | jq '.total_page_count')
